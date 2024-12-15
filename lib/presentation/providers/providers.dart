@@ -1,14 +1,14 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../data/models/qr_code.dart';
-import '../data/repositories/qrcode_repository.dart';
-import '../data/sources/hive_barcode_source.dart';
-import '../domain/repositories/qrcode_repository.dart';
-import 'viewmodels/history_viewmodel.dart';
-import 'viewmodels/scanner_viewmodel.dart';
+import '../../data/models/qr_code.dart';
+import '../../data/repositories/qrcode_repository.dart';
+import '../../data/sources/hive_barcode_source.dart';
+import '../../data/sources/preferences_repository.dart';
+import '../../domain/repositories/qrcode_repository.dart';
+import '../viewmodels/history_viewmodel.dart';
+import '../viewmodels/scanner_viewmodel.dart';
 
 final hiveBarcodeSourceProvider = Provider<HiveBarcodeSource>((ref) {
   final box = Hive.box<QRCodeModel>('barcodeHistory');
@@ -42,3 +42,7 @@ StateNotifierProvider<ScannerViewModel, ScannerState>(
     return ScannerViewModel(controller, ref, repository);
   },
 );
+
+final preferencesRepositoryProvider = Provider<PreferencesRepository>((ref) {
+  return PreferencesRepository();
+});

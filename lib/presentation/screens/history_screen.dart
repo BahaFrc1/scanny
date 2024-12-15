@@ -1,111 +1,166 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../utils/scanner_utils.dart';
 import '../../utils/converter.dart';
-import '../providers.dart';
+import '../providers/providers.dart';
+import '../widgets/toast.dart';
 
-class HistoryScreen extends ConsumerWidget {
+class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HistoryScreen> createState() => _HistoryScreenState();
+}
+
+class _HistoryScreenState extends ConsumerState<HistoryScreen> {
+  final Set<String> _selectedItems = {};
+  bool _isSelectionMode = false;
+
+  @override
+  Widget build(BuildContext context) {
     final history = ref.watch(historyViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scan History'),
+        title:
+            const Text('Scan History', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.deepPurpleAccent,
+        actions: [
+          if (_isSelectionMode)
+            IconButton(
+              icon: const Icon(Icons.cancel),
+              onPressed: () {
+                setState(() {
+                  _selectedItems.clear();
+                  _isSelectionMode = false;
+                });
+              },
+            ),
+          if (_isSelectionMode)
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                final notifier = ref.read(historyViewModelProvider.notifier);
+                for (final key in _selectedItems) {
+                  await notifier.deleteBarcode(int.parse(key));
+                }
+                setState(() {
+                  _selectedItems.clear();
+                  _isSelectionMode = false;
+                });
+              },
+            ),
+        ],
       ),
       body: history.isEmpty
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.history, size: 80, color: Colors.grey),
-            SizedBox(height: 16),
-            Text(
-              'No scanned QR codes yet.',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: history.length,
-        itemBuilder: (context, index) {
-          final entry = history[index];
-          final key = entry.key;
-          final barcode = entry.value;
-
-          return Card(
-            elevation: 4,
-            margin: const EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              title: Text(
-                barcode.displayValue ?? "Scanned data unavailable",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              subtitle: Text(
-                formatDate(barcode.scannedAt),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-              leading: IconButton(
-                icon: const Icon(Icons.share, color: Colors.blue),
-                onPressed: () {
-                  // Share logic here
-                  final shareText = barcode.displayValue ?? "No Data";
-                  _shareBarcode(context, shareText);
-                },
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.history, size: 80, color: Colors.grey),
+                  SizedBox(height: 16),
                   Text(
-                    BarcodeType.fromRawValue(barcode.typeIndex).name,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.teal[700],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.backup, color: Colors.orange),
-                    onPressed: () {
-                      // Backup logic here
-                      print('Backup pressed');
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final notifier = ref.read(historyViewModelProvider.notifier);
-                      await notifier.deleteBarcode(key); // Use the Hive key
-                    },
+                    'No scanned QR codes yet.',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ],
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: history.length,
+              itemBuilder: (context, index) {
+                final entry = history[index];
+                final key = entry.key;
+                final barcode = entry.value;
+                final isSelected = _selectedItems.contains(key.toString());
 
-  // Helper function for sharing
-  void _shareBarcode(BuildContext context, String text) {
-    final snackBar = SnackBar(content: Text('Sharing: $text'));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                return Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    title: Text(
+                      barcode.displayValue ?? "Scanned data unavailable",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    subtitle: Row(
+                      children: [
+                        const Icon(Icons.access_time,
+                            size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          formatDate(barcode.scannedAt),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                    leading: Icon(
+                      getBarcodeIcon(barcode.typeIndex),
+                      color: Colors.teal[700],
+                    ),
+                    trailing: _isSelectionMode
+                        ? Checkbox(
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedItems.add(key.toString());
+                                } else {
+                                  _selectedItems.remove(key.toString());
+                                }
+                              });
+                            },
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.backup,
+                                    color: Colors.blue),
+                                onPressed: () {
+                                  // todo: Implement backup feature
+                                  featureNotImplementedToast();
+                                },
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.share, color: Colors.blue),
+                                onPressed: () {
+                                  final shareText =
+                                      barcode.displayValue ?? "No Data";
+                                  final shareDate =
+                                      formatDate(barcode.scannedAt);
+                                  shareContent(
+                                      'Scanned Value: $shareText\nScanned At: $shareDate');
+                                },
+                              ),
+                            ],
+                          ),
+                    onLongPress: () {
+                      setState(() {
+                        _isSelectionMode = true;
+                        if (isSelected) {
+                          _selectedItems.remove(key.toString());
+                        } else {
+                          _selectedItems.add(key.toString());
+                        }
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
+    );
   }
 }

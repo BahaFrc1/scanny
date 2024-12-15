@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../providers.dart';
+import '../providers/providers.dart';
+import '../widgets/scanner_overlay_painter.dart';
 
-class ScannerScreen extends ConsumerWidget {
+class ScannerScreen extends ConsumerStatefulWidget {
   const ScannerScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ScannerScreen> createState() => _ScannerScreenState();
+}
+
+class _ScannerScreenState extends ConsumerState<ScannerScreen> {
+  bool _isSingleQRScanner = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final preferencesRepository = ref.read(preferencesRepositoryProvider);
+    final isSingleQRScanner = await preferencesRepository.getSingleQRScanner();
+    setState(() {
+      _isSingleQRScanner = isSingleQRScanner;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final scannerState = ref.watch(scannerViewModelProvider);
     final scannerViewModel = ref.read(scannerViewModelProvider.notifier);
     final controller = ref.read(scannerControllerProvider);
@@ -18,7 +40,8 @@ class ScannerScreen extends ConsumerWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Scanner'),
+          title: const Text('Scanner', style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.deepPurpleAccent,
         ),
         backgroundColor: Colors.black,
         body: Stack(
@@ -31,7 +54,14 @@ class ScannerScreen extends ConsumerWidget {
                   scannerViewModel.handleScannedBarcode(barcode.barcodes.first);
                 }
               },
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
+            ),
+
+            // QR Scanner Overlay
+            Positioned.fill(
+              child: CustomPaint(
+                painter: ScannerOverlayPainter(),
+              ),
             ),
 
             // Bottom action buttons
@@ -68,6 +98,10 @@ class ScannerScreen extends ConsumerWidget {
                     onPressed: () {
                       scannerViewModel.closeDialog();
                       scannerViewModel.saveScannedBarcode();
+                      if (_isSingleQRScanner) {
+                        scannerViewModel.finalizeSession();
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: const Text('Save'),
                   ),

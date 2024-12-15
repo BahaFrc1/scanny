@@ -5,27 +5,6 @@ import '../presentation/screens/profile_screen.dart';
 import '../presentation/screens/scanner_screen.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/scanner',
-  routes: [
-    GoRoute(
-      path: '/history',
-      name: 'history',
-      builder: (context, state) => const HistoryScreen(),
-    ),
-    GoRoute(
-      path: '/scanner',
-      name: 'scanner',
-      builder: (context, state) => const ScannerScreen(),
-    ),
-    GoRoute(
-      path: '/profile',
-      name: 'profile',
-      builder: (context, state) => const ProfileScreen(),
-    ),
-  ],
-);
-
-final appRouter2 = GoRouter(
   initialLocation: '/history',
   routes: [
     // ShellRoute for BottomNavigationBar

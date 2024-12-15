@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../data/models/qr_code.dart';
 import '../../domain/repositories/qrcode_repository.dart';
-import '../providers.dart';
+import '../providers/providers.dart';
 
 class ScannerViewModel extends StateNotifier<ScannerState> {
   final MobileScannerController controller;
