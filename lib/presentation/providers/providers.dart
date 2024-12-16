@@ -14,7 +14,7 @@ import '../viewmodels/profile_viewmodel.dart';
 import '../viewmodels/scanner_viewmodel.dart';
 
 final profileViewModelProvider = StateNotifierProvider<ProfileViewModel, User?>(
-      (ref) => ProfileViewModel(),
+  (ref) => ProfileViewModel(),
 );
 
 final hiveBarcodeSourceProvider = Provider<HiveBarcodeSource>((ref) {
@@ -28,13 +28,15 @@ final barcodeRepositoryProvider = Provider<BarcodeRepository>((ref) {
 });
 
 final historyViewModelProvider =
-StateNotifierProvider<HistoryViewModel, List<MapEntry<int, QRCodeModel>>>((ref) {
+    StateNotifierProvider<HistoryViewModel, List<MapEntry<int, QRCodeModel>>>(
+        (ref) {
   final repository = ref.read(barcodeRepositoryProvider);
   return HistoryViewModel(repository);
 });
 
 final scannerControllerProvider = Provider<MobileScannerController>(
-      (ref) => MobileScannerController(
+  (ref) => MobileScannerController(
+    formats: [BarcodeFormat.qrCode],
     autoStart: true,
     torchEnabled: false,
     useNewCameraSelector: true,
@@ -42,14 +44,16 @@ final scannerControllerProvider = Provider<MobileScannerController>(
 );
 
 final scannerViewModelProvider =
-StateNotifierProvider<ScannerViewModel, ScannerState>(
-      (ref) {
+    StateNotifierProvider<ScannerViewModel, ScannerState>(
+  (ref) {
     final controller = ref.read(scannerControllerProvider);
-    final repository = ref.read(barcodeRepositoryProvider); // Ensure repository is provided
+    final repository =
+        ref.read(barcodeRepositoryProvider); // Ensure repository is provided
     return ScannerViewModel(controller, ref, repository);
   },
 );
 
-final preferencesRepositoryProvider = Provider<PreferencesRepositoryImpl>((ref) {
+final preferencesRepositoryProvider =
+    Provider<PreferencesRepositoryImpl>((ref) {
   return PreferencesRepositoryImpl();
 });

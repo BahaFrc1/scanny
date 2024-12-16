@@ -41,3 +41,13 @@ flutter:
   assets:
     - lib/presentation/resources/img/user_ic.png
     - lib/presentation/resources/img/no_items_found.png
+    - lib/presentation/resources/img/app_logo.png
+
+    - lib/presentation/resources/screenshots/scanner_screen_scanning.png
+    - lib/presentation/resources/screenshots/scanner_screen_success.png
+    - lib/presentation/resources/screenshots/history_screen_empty.png
+    - lib/presentation/resources/screenshots/history_screen_types.png
+    - lib/presentation/resources/screenshots/history_screen_multi_delete.png
+    - lib/presentation/resources/screenshots/history_screen_dialog.png
+    - lib/presentation/resources/screenshots/profile_screen_light.png
+    - lib/presentation/resources/screenshots/profile_screen_dark.png

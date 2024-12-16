@@ -17,10 +17,10 @@ const String appBarTitleScanner = 'QR Scanner';
 const String appBarTitleProfile = 'Profile';
 
 // Paths
-const String noItemsFoundImagePath =
-    'lib/presentation/resources/img/no_items_found.png';
-const String userPlaceholderImagePath =
-    'lib/presentation/resources/img/user_ic.png';
+const String imagesPath = 'lib/presentation/resources/img/';
+const String appLogoPath = '${imagesPath}app_logo.png';
+const String noItemsFoundImagePath = '${imagesPath}no_items_found.png';
+const String userPlaceholderImagePath = '${imagesPath}user_ic.png';
 
 // Placeholders
 const String noScannedQRCodesMessage = 'No scanned QR codes yet.';
@@ -31,7 +31,9 @@ const String scannedValuePrefix = 'Scanned Value';
 const String scannedAtPrefix = 'Scanned At';
 const String buttonSave = 'Save';
 const String buttonDelete = 'Delete';
+const String buttonClose = 'Close';
 const String logoutDelete = 'Logout';
+const String completeContentTitle = 'content';
 const String darkThemeText = 'Dark Theme';
 const String singleQRCodeScannerText = 'Single QR Code Scanner';
 const String featureNotImplementedMessage = 'Feature not implemented yet.';
