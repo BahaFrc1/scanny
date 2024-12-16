@@ -1,6 +1,7 @@
 # qr_scanner_workerbase
 
-A new Flutter project.
+a QR Code Scanner App where users can scan any QR Code and easily see its
+content, together with a history of all previously scanned QR Codes.
 
 ## Getting Started
 

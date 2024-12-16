@@ -49,13 +49,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CircleAvatar(
-                radius: 50,
+                radius: 80,
                 backgroundImage:
                     AssetImage('lib/presentation/resources/img/user_ic.png'),
               ),
               const SizedBox(height: 16),
               const Text(
-                'John Doe',
+                'Yagami Light',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'johndoe@example.com',
+                'yagamilight@mock.com',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -82,7 +82,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text('Login'),
+                child: const Text('Logout'),
               ),
               const SizedBox(height: 24),
               Card(

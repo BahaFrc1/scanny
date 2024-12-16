@@ -40,10 +40,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Scanner', style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.deepPurpleAccent,
+          title: const Text('Scanner'),
         ),
-        backgroundColor: Colors.black,
         body: Stack(
           children: [
             // QR Code Scanner View

@@ -1,3 +1,4 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../presentation/screens/history_screen.dart';
@@ -35,52 +36,63 @@ final appRouter = GoRouter(
   ],
 );
 
-class BottomNavigationWrapper extends StatelessWidget {
+class BottomNavigationWrapper extends StatefulWidget {
   final Widget child;
 
   const BottomNavigationWrapper({super.key, required this.child});
 
   @override
+  _BottomNavigationWrapperState createState() => _BottomNavigationWrapperState();
+}
+
+class _BottomNavigationWrapperState extends State<BottomNavigationWrapper> {
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+  final iconList = <IconData>[
+    Icons.history,
+    Icons.person,
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    // var position = 0;
     final GoRouter router = GoRouter.of(context);
-    final currentLocation = GoRouterState.of(context).uri.toString();
 
     return Scaffold(
-      body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _getSelectedIndex(currentLocation),
-        onTap: (int index) {
-          switch (index) {
-            case 1:
-              router.go('/profile');
-            default:
-              router.go('/history');
-          }
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+        children: const [
+          HistoryScreen(),
+          ProfileScreen(),
         ],
+      ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: iconList,
+        activeIndex: _currentIndex,
+        gapLocation: GapLocation.center,
+        notchSmoothness: NotchSmoothness.softEdge,
+        activeColor: Colors.deepPurpleAccent,
+        inactiveColor: Colors.grey,
+        leftCornerRadius: 20,
+        rightCornerRadius: 20,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => router.push('/scanner'),
         heroTag: 'scannerFab',
+        shape: const CircleBorder(),
         child: const Icon(Icons.qr_code_scanner),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
-  }
-
-  int _getSelectedIndex(String location) {
-    if (location.startsWith('/history')) return 0;
-    if (location.startsWith('/profile')) return 1;
-    return -1; // Scanner screen has no index on the bottom bar
   }
 }
