@@ -7,15 +7,15 @@ class HiveBarcodeSource {
   HiveBarcodeSource(this._barcodeBox);
 
   Future<void> addBarcode(QRCodeModel barcode) async {
-    await _barcodeBox.add(barcode); // Adds new barcode with an auto-generated key
+    await _barcodeBox.add(barcode);
   }
 
   Future<void> deleteBarcodeByKey(int key) async {
-    await _barcodeBox.delete(key); // Deletes barcode using the Hive key (int)
+    await _barcodeBox.delete(key);
   }
 
   Future<List<QRCodeModel>> getAllBarcodes() async {
-    return _barcodeBox.values.toList(); // Returns all barcodes
+    return _barcodeBox.values.toList();
   }
 
   Future<Map<int, QRCodeModel>> getAllBarcodesWithKeys() async {

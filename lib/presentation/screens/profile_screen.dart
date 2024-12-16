@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../config/keys.dart';
 import '../providers/providers.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/toast.dart';
@@ -34,10 +35,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final preferencesRepository = ref.read(preferencesRepositoryProvider);
+    final profile = ref.watch(profileViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(color: Colors.white)),
+        title: const Text(appBarTitleProfile,
+            style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
       ),
@@ -48,23 +51,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
-                radius: 80,
-                backgroundImage:
-                    AssetImage('lib/presentation/resources/img/user_ic.png'),
-              ),
+              CircleAvatar(
+                  radius: 80,
+                  backgroundImage: profile != null && profile.photoURL != null
+                      ? NetworkImage(profile.photoURL ?? '')
+                      : AssetImage(userPlaceholderImagePath)),
               const SizedBox(height: 16),
-              const Text(
-                'Yagami Light',
-                style: TextStyle(
+              Text(
+                profile?.displayName ?? '',
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'yagamilight@mock.com',
-                style: TextStyle(
+              Text(
+                profile?.email ?? '',
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -82,7 +85,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text('Logout'),
+                child: const Text(logoutDelete),
               ),
               const SizedBox(height: 24),
               Card(
@@ -97,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Dark Theme'),
+                          const Text(darkThemeText),
                           Switch(
                             value: _isDarkTheme,
                             onChanged: (value) async {
@@ -121,7 +124,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Single QR Code Scanner'),
+                          // closes screen after scanning one QR code
+                          const Text(singleQRCodeScannerText),
                           Switch(
                             value: _isSingleQRScanner,
                             onChanged: (value) async {

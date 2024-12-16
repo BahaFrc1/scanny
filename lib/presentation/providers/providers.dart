@@ -2,16 +2,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../config/keys.dart';
 import '../../data/models/qr_code.dart';
+import '../../data/models/user.dart';
 import '../../data/repositories/qrcode_repository.dart';
 import '../../data/sources/hive_barcode_source.dart';
-import '../../data/sources/preferences_repository.dart';
+import '../../data/repositories/preferences_repository.dart';
 import '../../domain/repositories/qrcode_repository.dart';
 import '../viewmodels/history_viewmodel.dart';
+import '../viewmodels/profile_viewmodel.dart';
 import '../viewmodels/scanner_viewmodel.dart';
 
+final profileViewModelProvider = StateNotifierProvider<ProfileViewModel, User?>(
+      (ref) => ProfileViewModel(),
+);
+
 final hiveBarcodeSourceProvider = Provider<HiveBarcodeSource>((ref) {
-  final box = Hive.box<QRCodeModel>('barcodeHistory');
+  final box = Hive.box<QRCodeModel>(hiveBoxBarcodeHistory);
   return HiveBarcodeSource(box);
 });
 
@@ -43,6 +50,6 @@ StateNotifierProvider<ScannerViewModel, ScannerState>(
   },
 );
 
-final preferencesRepositoryProvider = Provider<PreferencesRepository>((ref) {
-  return PreferencesRepository();
+final preferencesRepositoryProvider = Provider<PreferencesRepositoryImpl>((ref) {
+  return PreferencesRepositoryImpl();
 });

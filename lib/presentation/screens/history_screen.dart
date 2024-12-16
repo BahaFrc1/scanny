@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qr_scanner_workerbase/config/keys.dart';
 import '../../utils/scanner_utils.dart';
 import '../../utils/converter.dart';
 import '../providers/providers.dart';
@@ -35,7 +36,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               entry.value.displayValue?.toLowerCase().contains(query) ?? false)
           .toList();
     });
-    print("Filtered History: $_filteredHistory");
   }
 
   @override
@@ -47,7 +47,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text('Scan History', style: TextStyle(color: Colors.white)),
+            const Text(appBarTitleHistory, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
         actions: [
@@ -98,7 +98,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       )
                     : null,
                 // Shows close button only when there is input
-                hintText: 'Search',
+                hintText: searchHintText,
                 filled: true,
                 fillColor: Colors.grey[200],
                 border: OutlineInputBorder(
@@ -111,7 +111,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ),
           ),
 
-          // ListView
           Expanded(
             child: _filteredHistory.isEmpty
                 ? Center(
@@ -119,13 +118,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "lib/presentation/resources/img/no_items_found.png",
+                          noItemsFoundImagePath,
                           height: 200.0,
                           width: 200.0,
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'No scanned QR codes found.',
+                          noScannedQRCodesMessage,
                           style: TextStyle(
                               fontSize: 18, color: Colors.deepPurpleAccent),
                         ),
@@ -151,7 +150,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(16),
                           title: Text(
-                            barcode.displayValue ?? "Scanned data unavailable",
+                            barcode.displayValue ?? scannedDataUnavailable,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
@@ -203,11 +202,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                                           color: Colors.teal),
                                       onPressed: () {
                                         final shareText =
-                                            barcode.displayValue ?? "No Data";
+                                            barcode.displayValue ?? scannedDataUnavailable;
                                         final shareDate =
                                             formatDate(barcode.scannedAt);
                                         shareContent(
-                                            'Scanned Value: $shareText\nScanned At: $shareDate');
+                                            '$scannedValuePrefix: $shareText\n$scannedAtPrefix: $shareDate');
                                       },
                                     ),
                                   ],

@@ -20,7 +20,7 @@ class ScannerViewModel extends StateNotifier<ScannerState> {
         isDialogVisible: true,
       );
 
-      controller.stop(); // Stop scanning
+      controller.stop();
     }
   }
 
@@ -48,7 +48,7 @@ class ScannerViewModel extends StateNotifier<ScannerState> {
       scannedData: null,
       isDialogVisible: false,
     );
-    controller.start(); // Restart scanning
+    controller.start();
   }
 
   void finalizeSession() {

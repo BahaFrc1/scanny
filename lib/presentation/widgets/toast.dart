@@ -1,9 +1,9 @@
-
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../config/keys.dart';
+
 Future<bool?> featureNotImplementedToast() {
-  return toast( "This feature is not yet implemented");
+  return toast( featureNotImplementedMessage);
 }
 
 Future<bool?> toast(String text) {
@@ -12,8 +12,6 @@ Future<bool?> toast(String text) {
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
-    backgroundColor: Colors.black,
-    textColor: Colors.white,
     fontSize: 16.0,
   );
 }
