@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(QRCodeModelAdapter());
-  await Hive.openBox<QRCodeModel>(hiveBoxBarcodeHistory);
+  await Hive.openBox<QRCodeModel>(hiveBoxQRCodeHistory);
   runApp(ProviderScope(child: MyApp()));
 }
 

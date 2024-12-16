@@ -8,15 +8,15 @@ class ScannerViewModel extends StateNotifier<ScannerState> {
   final MobileScannerController controller;
   final Ref ref;
   bool historyScreenShouldUpdateUI = false;
-  final BarcodeRepository _repository;
+  final QrCodeRepository _repository;
 
   ScannerViewModel(this.controller, this.ref, this._repository)
       : super(ScannerState());
 
-  void handleScannedBarcode(Barcode? barcode) {
-    if (barcode != null) {
+  void handleScannedQrCode(Barcode? code) {
+    if (code != null) {
       state = state.copyWith(
-        scannedData: barcode,
+        scannedData: code,
         isDialogVisible: true,
       );
 
@@ -24,17 +24,17 @@ class ScannerViewModel extends StateNotifier<ScannerState> {
     }
   }
 
-  void saveScannedBarcode() {
+  void saveScannedQrCode() {
     final scannedData = state.scannedData;
     if (scannedData != null) {
-      final newBarcode = QRCodeModel(
+      final newCode = QRCodeModel(
         displayValue: scannedData.displayValue,
         typeIndex: scannedData.type.rawValue,
         scannedAt: DateTime.now(),
       );
 
       // Save to the repository
-      _repository.addBarcode(newBarcode);
+      _repository.addQrCode(newCode);
 
       historyScreenShouldUpdateUI = true;
 
@@ -55,7 +55,7 @@ class ScannerViewModel extends StateNotifier<ScannerState> {
     // Notify history screen to update UI if new QR codes are added
     if (historyScreenShouldUpdateUI) {
       final historyNotifier = ref.read(historyViewModelProvider.notifier);
-      historyNotifier.loadBarcodes();
+      historyNotifier.loadQrCodes();
       historyScreenShouldUpdateUI = false;
     }
   }

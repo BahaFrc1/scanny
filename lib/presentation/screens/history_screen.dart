@@ -67,7 +67,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               onPressed: () async {
                 final notifier = ref.read(historyViewModelProvider.notifier);
                 for (final key in _selectedItems) {
-                  await notifier.deleteBarcode(int.parse(key));
+                  await notifier.deleteQrCode(int.parse(key));
                 }
                 setState(() {
                   _selectedItems.clear();
@@ -137,7 +137,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               itemBuilder: (context, index) {
                 final entry = _filteredHistory[index];
                 final key = entry.key;
-                final barcode = entry.value;
+                final qrCode = entry.value;
                 final isSelected =
                 _selectedItems.contains(key.toString());
 
@@ -156,7 +156,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                           builder: (context) {
                             return AlertDialog(
                               title: const Text(completeContentTitle),
-                              content: Text(barcode.displayValue ?? scannedDataUnavailable),
+                              content: Text(qrCode.displayValue ?? scannedDataUnavailable),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -170,7 +170,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         );
                       },
                       child: Text(
-                        barcode.displayValue ?? scannedDataUnavailable,
+                        qrCode.displayValue ?? scannedDataUnavailable,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -185,7 +185,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                             size: 16, color: Colors.grey),
                         const SizedBox(width: 4),
                         Text(
-                          formatDate(barcode.scannedAt),
+                          formatDate(qrCode.scannedAt),
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[600],
@@ -194,7 +194,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       ],
                     ),
                     leading: Icon(
-                      getBarcodeIcon(barcode.typeIndex),
+                      getQRCodeIcon(qrCode.typeIndex),
                     ),
                     trailing: _isSelectionMode
                         ? Checkbox(
@@ -225,9 +225,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                               color: Colors.teal),
                           onPressed: () {
                             final shareText =
-                                barcode.displayValue ?? scannedDataUnavailable;
+                                qrCode.displayValue ?? scannedDataUnavailable;
                             final shareDate =
-                            formatDate(barcode.scannedAt);
+                            formatDate(qrCode.scannedAt);
                             shareContent(
                                 '$scannedValuePrefix: $shareText\n$scannedAtPrefix: $shareDate');
                           },

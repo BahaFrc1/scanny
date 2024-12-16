@@ -55,7 +55,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
           if (data.barcodes.isNotEmpty) {
             ref
                 .read(scannerViewModelProvider.notifier)
-                .handleScannedBarcode(data.barcodes.first);
+                .handleScannedQrCode(data.barcodes.first);
           }
         });
         unawaited(controller.start());
@@ -80,15 +80,23 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Text(appBarTitleScanner),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                context.go(routeHistory);
+              },
+            ),
+          ],
         ),
         body: Stack(
           children: [
             // QR Code Scanner View
             MobileScanner(
               controller: controller,
-              onDetect: (barcode) {
-                if (barcode.barcodes.isNotEmpty) {
-                  scannerViewModel.handleScannedBarcode(barcode.barcodes.first);
+              onDetect: (code) {
+                if (code.barcodes.isNotEmpty) {
+                  scannerViewModel.handleScannedQrCode(code.barcodes.first);
                 }
               },
               errorBuilder: (context, error, child) {
@@ -132,10 +140,10 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
             // Show dialog when a QR code is detected
             if (scannerState.isDialogVisible)
               newCodeScannedDialog(context, scannerState.scannedData?.displayValue, onSave: () {
-                scannerViewModel.saveScannedBarcode();
+                scannerViewModel.saveScannedQrCode();
                 if (_isSingleQRScanner) {
                   scannerViewModel.finalizeSession();
-                  Navigator.of(context).pop();
+                  context.go(routeHistory);
                 }
               }, onCancel: () {
                 scannerViewModel.closeDialog();

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:share_plus/share_plus.dart';
 
-IconData getBarcodeIcon(int typeIndex) {
+IconData getQRCodeIcon(int typeIndex) {
   switch (BarcodeType.fromRawValue(typeIndex)) {
     case BarcodeType.contactInfo:
       return Icons.contact_page;

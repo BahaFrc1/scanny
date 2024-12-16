@@ -1,9 +1,9 @@
 import '../../data/models/qr_code.dart';
 
-abstract class BarcodeRepository {
-  Future<Map<int, QRCodeModel>> getAllBarcodesWithKeys();
+abstract class QrCodeRepository {
+  Future<Map<int, QRCodeModel>> getAllQrCodesWithKeys();
 
-  Future<void> addBarcode(QRCodeModel barcode);
+  Future<void> addQrCode(QRCodeModel code);
 
-  Future<void> deleteBarcodeByKey(int key);
+  Future<void> deleteQrCodeByKey(int key);
 }

@@ -8,7 +8,7 @@ const String dbIsDarkTheme = 'isDarkTheme';
 const String dbIsSingleQRScanner = 'isSingleQRScanner';
 
 // Hive Box Names
-const String hiveBoxBarcodeHistory = 'barcodeHistory';
+const String hiveBoxQRCodeHistory = 'qrcodeHistory';
 
 // Titles
 const String appName = 'QR Scanner App';

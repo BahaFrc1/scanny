@@ -7,7 +7,7 @@ import '../presentation/screens/scanner_screen.dart';
 import '../presentation/widgets/bottom_navigation_bar.dart';
 
 final appRouter = GoRouter(
-  initialLocation: routeHistory,
+  initialLocation: routeScanner,
   routes: [
     ShellRoute(
       navigatorKey: GlobalKey<NavigatorState>(),
